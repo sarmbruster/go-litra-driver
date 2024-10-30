@@ -12,11 +12,18 @@ UDEV Config
 -----------
 
 Before you can use the light on Linux as a non-root user, you need to set up
-the following UDEV rule in ``/etc/udev/rules.d/82-litra-glow.rules``::
+the following UDEV rule in ``/etc/udev/rules.d/72-litra-glow.rules``::
 
 	SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c900", MODE:="0666", GROUP="plugdev"
-	SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c900", TAG+="uaccess"
+	SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c900", TAG+="uaccess", MODE="0660"
 	KERNEL=="hidraw*", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c900", TAG+="uaccess"
+
+.. NOTE::
+   `uaccess` will be only effective if the rules file name is lexically before /usr/lib/udev/rules.d/73-seat-late.rules. 
+   See section 4.3 on https://wiki.archlinux.org/title/Udev for details.
+
+.. NOTE::
+   GROUP="plugdev"` is only for Debian/Ubuntu. Arch (and maybe others) do not have a `plugdev` group and rely on `uaccess` tag.
 
 Then restart UDEV to refresh it rules as root::
 
